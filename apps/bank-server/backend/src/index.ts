@@ -40,7 +40,7 @@ app.post("/payment", async (req: Request, res:Response) => {
         const { userId, amount, bank } = verifyToken as JwtPayload
 
         const response = await axios.post(`http://localhost:3004/${bank}`, {
-           amount, userId, bank 
+           amount, userId, token 
         })
 
         if( response.status == 200 ) {
@@ -48,18 +48,38 @@ app.post("/payment", async (req: Request, res:Response) => {
                 message: "transcation successfully completed"
             })
         }
-        else return res.status(400).json({
-            message: "transcation cancelled "
-        })
+    
     }
-    else {
 
-        const response = await axios.get("http://localhost:3004/canceltranscation")
+    return res.status(400).json({
+        message: "transcation cancelled "
+    })
+    
+})
 
-        return res.status(400).json({
-            message: "transcation cancelled "
+app.post("/cancel", async (req: Request, res:Response) => {
+    const { token } = req.body
+
+    const verifyToken = await jwt.verify(token, "banksecret")
+    if( verifyToken ) {
+        const { userId, amount, bank } = verifyToken as JwtPayload
+
+        const response = await axios.post(`http://localhost:3004/cancel`, {
+           amount, userId, token 
         })
+
+        if( response.status == 200 ) {
+            return res.status(200).json({
+                message: "transcation successfully cancel"
+            })
+        }
+    
     }
+
+    return res.status(400).json({
+        message: "Error "
+    })
+    
 })
 
 app.listen(port, () => console.log(`server is running ${port}`))

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useParams, useSearchParams } from "react-router"
+import axios from "axios";
 
 export function Home() {
     const { bank } = useParams();
@@ -9,15 +10,48 @@ export function Home() {
 
     const [bankId, setBankId] = useState("")
     const [password, setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
 
-    function handlePay() {
-        console.log("Test payment", { bank, token, amount, bankId, password })
+    async function handlePay() {
+        event.preventDefault()
+        try {
+            setLoading(true)
+
+            const res = await axios.post("http://localhost:5000/payment", {
+                token
+            })
+
+            if( res.status == 200 ) {
+                setBankId("Complete")
+            }
+            
+        } catch (e) {
+            console.error(e)
+        }
+        finally {
+            setLoading(false)
+        }
     }
 
-    function handleCancel() {
-        setBankId("")
-        setPassword("")
-        console.log("Test payment cancelled", { bank, token, amount })
+    async function handleCancel() {
+        event.preventDefault()
+        try {
+            setLoading(true)
+
+            const res = await axios.post("http://localhost:5000/cancel", {
+                token
+            })
+
+            if( res.status == 200 ) {
+                setBankId("Error")
+            }
+            
+        } catch (e) {
+            console.error(e)
+        }
+        finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -64,6 +98,7 @@ export function Home() {
 
                     <div className="mt-2 flex gap-3">
                         <button
+                            disabled={loading}
                             type="button"
                             onClick={handleCancel}
                             className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-base font-semibold text-slate-700 transition hover:bg-slate-50"
@@ -71,6 +106,7 @@ export function Home() {
                             Cancel
                         </button>
                         <button
+                            disabled={loading}
                             type="button"
                             onClick={handlePay}
                             className="w-full rounded-lg bg-emerald-600 px-4 py-3 text-base font-semibold text-white transition hover:bg-emerald-700"

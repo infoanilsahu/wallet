@@ -50,4 +50,38 @@ app.post("/hdfc", async (req:Request, res:Response) => {
 
 })
 
+
+app.post("/cancel", async (req:Request, res:Response) => {
+    // check responce from hdfc backend
+    const parse = bankRes.safeParse(req.body)
+    if( !parse.success ) {
+        return res.status(403).json({
+            message: "not get required data"
+        })
+    }
+
+    try {
+        const { amount, token: reqToken, userId: reqUserId } = parse.data
+
+        await prisma.onRampTransaction.update({
+            where: {token: reqToken},
+            data: {
+                status: "Fail"
+            }
+        })
+
+        return res.status(200).json({
+            message: "captured"
+        })
+
+    } catch (e) {
+        console.error(e)
+        return res.status(411).json({
+            message: "Error while processing webhook"
+        })
+    }
+
+
+})
+
 app.listen(port, () => console.log(`server is running on ${port} !`))
