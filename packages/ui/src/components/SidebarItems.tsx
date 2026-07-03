@@ -14,9 +14,9 @@ export function SideBarItems({Icon, href, pathname, title, click}:SidebarItemsPr
     const selected = pathname === href
     return (
         <>
-            <div className={`flex gap-2 ${selected ? "text-[#6a51a6]" : "text-slate-500"} cursor-pointer w-full  p-2 pl-8`} onClick={click}>
+            <div className={`flex gap-2 ${selected ? "text-purple-500" : "text-slate-500"} cursor-pointer w-full  p-2 pl-8`} onClick={click}>
                 <div className="">{Icon}</div>
-                <div className={`font-bold ${selected ? "text-[#6a51a6]" : "text-slate-500"}`}>{title}</div>
+                <div className={` ${selected ? "text-[#6a51a6] font-bold" : "text-slate-500"}`}>{title}</div>
             </div>
         </>
     ) 

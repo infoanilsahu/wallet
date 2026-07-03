@@ -26,7 +26,7 @@ export function Sidebar({children}: SideBarProps) {
                 <SideBarItems title="Transfer" href="/transfer" pathname={pathname} click={() => router.push("/transfer")}  />
                 <SideBarItems title="Transaction" href="/transaction" pathname={pathname} click={() => router.push("/transaction")}  />
             </div>
-            <div>
+            <div className="children w-[85%]">
                 {children}
             </div>
         </div>
