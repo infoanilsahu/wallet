@@ -11,7 +11,7 @@ export default function Transfer() {
                         <AddMoney />
                     </div>
                     <div className="flex-1">
-                        <ShowBalance lockBalance={100} unlockBalance={1000} />
+                        <ShowBalance />
                     </div>
 
                 </div>
