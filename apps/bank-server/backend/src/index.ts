@@ -11,12 +11,18 @@ const port = process.env.PORT ?? 5000;
 app.use(cors())
 app.use(express.json())
 
+interface TokenProp extends JwtPayload {
+    userId: string;
+    token: string;
+    amount: number;
+}
+
 app.post("/getservertoken", async (req:Request, res:Response) => {
     try {
         const { bank, amount, userId } = req.body
     
-        const token = await jwt.sign({
-            userId, amount, bank
+        const token = jwt.sign({
+            userId, amount: Number(amount), bank
         }, "banksecret", {expiresIn: "1h"})
     
         return res.status(200).json({
@@ -35,11 +41,11 @@ app.post("/getservertoken", async (req:Request, res:Response) => {
 app.post("/payment", async (req: Request, res:Response) => {
     const { token } = req.body
 
-    const verifyToken = await jwt.verify(token, "banksecret")
+    const verifyToken = jwt.verify(token, "banksecret")
     if( verifyToken ) {
-        const { userId, amount, bank } = verifyToken as JwtPayload
+        const { userId, amount, bank } = verifyToken as TokenProp
 
-        const response = await axios.post(`http://localhost:3004/${bank}`, {
+        const response = await axios.post(`http://localhost:3003/${bank}`, {
            amount, userId, token 
         })
 
@@ -60,11 +66,11 @@ app.post("/payment", async (req: Request, res:Response) => {
 app.post("/cancel", async (req: Request, res:Response) => {
     const { token } = req.body
 
-    const verifyToken = await jwt.verify(token, "banksecret")
+    const verifyToken = jwt.verify(token, "banksecret")
     if( verifyToken ) {
-        const { userId, amount, bank } = verifyToken as JwtPayload
+        const { userId, amount, bank } = verifyToken as TokenProp
 
-        const response = await axios.post(`http://localhost:3004/cancel`, {
+        const response = await axios.post(`http://localhost:3003/cancel`, {
            amount, userId, token 
         })
 

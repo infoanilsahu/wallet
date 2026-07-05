@@ -4,10 +4,9 @@ import { prisma } from "@repo/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
 
-export async function createOnRampTxn(amount: number, provider: string) {
+export async function createOnRampTxn(amount: number, provider: string, token: string) {
     const session = await getServerSession(authOptions)
     const userId = session?.user.id
-    const token = crypto.randomUUID()
 
     if( !userId ) {
         return {

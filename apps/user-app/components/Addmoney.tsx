@@ -4,14 +4,38 @@ import { Button } from "@repo/ui/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/components/ui/card";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
+import axios from "axios";
+import { createOnRampTxn } from "@/app/lib/action/createOnRampTxn";
+import { useRouter } from "next/navigation";
 
 export function AddMoney() {
   const [amount, setAmount] = useState("");
   const [bank, setBank] = useState<string | null>("");
 
-  const handleAddMoney = () => {
-    console.log("Adding money:", amount, "to bank:", bank);
-    // Add your money addition logic here
+  const nevigate = useRouter()
+
+  const { data: session, status } = useSession()
+
+  async function handleAddMoney() {
+    if( !session ) return;
+
+    try {
+      const res = await axios.post("http://localhost:5000/getservertoken", {
+        amount, bank, userId: session.user.id
+      })
+
+      if (res.status === 200 ) {
+        const { url, token } = res.data
+        await createOnRampTxn(Number(amount), bank!, token)
+        nevigate.push(url)
+
+      }
+
+    } catch (err) {
+      console.log(err);
+      
+    }
   };
 
   return (

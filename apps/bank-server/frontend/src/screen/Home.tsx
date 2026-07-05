@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useParams, useSearchParams } from "react-router"
+import { useParams, useSearchParams, useNavigate } from "react-router"
 import axios from "axios";
 
 export function Home() {
@@ -11,6 +11,9 @@ export function Home() {
     const [bankId, setBankId] = useState("")
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
+    const [transactionStatus, setTransactionStatus] = useState("")
+
+    const router = useNavigate()
 
     async function handlePay() {
         event.preventDefault()
@@ -22,11 +25,19 @@ export function Home() {
             })
 
             if( res.status == 200 ) {
-                setBankId("Complete")
+                const { message } = res.data
+                setTransactionStatus(message)
+                router(-1)
             }
             
-        } catch (e) {
-            console.error(e)
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                console.log("Status:", err.response?.status);
+                console.log("Response:", err.response?.data);
+                console.log("Headers:", err.response?.headers);
+            } else {
+                console.log(err);
+            }
         }
         finally {
             setLoading(false)
@@ -43,7 +54,9 @@ export function Home() {
             })
 
             if( res.status == 200 ) {
-                setBankId("Error")
+                const { message } = res.data
+                setTransactionStatus(message)
+                router(-1)
             }
             
         } catch (e) {
@@ -66,6 +79,10 @@ export function Home() {
                         ₹{amount ?? "0"}
                     </p>
                 </div>
+
+                {transactionStatus.length > 3 && 
+                    <div className="font-semibold text-red-500">{transactionStatus}</div>
+                }
 
                 <div className="space-y-5">
                     <label className="block">

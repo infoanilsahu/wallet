@@ -5,13 +5,14 @@ const app = express()
 
 
 const port = process.env.PORT ?? 3003;
+app.use(express.json())
 
 app.post("/hdfc", async (req:Request, res:Response) => {
     // check responce from hdfc backend
     const parse = bankRes.safeParse(req.body)
     if( !parse.success ) {
         return res.status(403).json({
-            message: "not get required data"
+            message: parse.error.message
         })
     }
 
