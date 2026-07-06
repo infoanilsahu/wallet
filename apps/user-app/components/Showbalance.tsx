@@ -36,7 +36,7 @@ export default function ShowBalance() {
 
   useEffect(() => {
     loadBalance()
-  },[status])
+  },[status, session])
 
   return (
     <Card className="w-full mx-auto bg-white ring-gray-200">

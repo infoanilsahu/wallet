@@ -3,7 +3,7 @@ import { Input } from "@repo/ui/components/ui/input";
 import { Button } from "@repo/ui/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { createOnRampTxn } from "@/app/lib/action/createOnRampTxn";
@@ -37,6 +37,11 @@ export function AddMoney() {
       
     }
   };
+
+  useEffect(() => {
+    setAmount("")
+    setBank("")
+  }, [status, session])
 
   return (
     <Card className="w-full mx-auto bg-white ring-gray-200 shadow-lg ">

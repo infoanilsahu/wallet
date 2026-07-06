@@ -1,4 +1,5 @@
 import { AddMoney } from "@/components/Addmoney";
+import { OnRamp } from "@/components/Onramp";
 import ShowBalance from "@/components/Showbalance";
 
 export default function Transfer() {
@@ -14,6 +15,9 @@ export default function Transfer() {
                         <ShowBalance />
                     </div>
 
+                </div>
+                <div className="onramp m-5">
+                    <OnRamp />
                 </div>
             </div>
         </>
