@@ -19,15 +19,18 @@ export function Sidebar({children}: SideBarProps) {
 
     return (
         <>
-        <AppBar onSignin={signIn} onSignout={signOut} user={session.data?.user} />
-        <div className="flex h-screen">
-            <div className="w-[15%]  h-full flex flex-col items-center ">
-                <SideBarItems title="Home" href="/dashboard" pathname={pathname} click={() => router.push("/dashboard")}  />
-                <SideBarItems title="Transfer" href="/transfer" pathname={pathname} click={() => router.push("/transfer")}  />
-                <SideBarItems title="Transaction" href="/transaction" pathname={pathname} click={() => router.push("/transaction")}  />
-            </div>
-            <div className="children w-[85%]">
-                {children}
+        <div className="min-h-screen">
+            <AppBar onSignin={signIn} onSignout={signOut} user={session.data?.user} />
+            <div className="flex h-fit">
+                <div className="w-[15%]  h-full flex flex-col items-center ">
+                    <SideBarItems title="Home" href="/dashboard" pathname={pathname} click={() => router.push("/dashboard")}  />
+                    <SideBarItems title="Transfer" href="/transfer" pathname={pathname} click={() => router.push("/transfer")}  />
+                    <SideBarItems title="Transaction" href="/transaction" pathname={pathname} click={() => router.push("/transaction")}  />
+                    <SideBarItems title="P2P Transfer" href="/p2ptransfer" pathname={pathname} click={() => router.push("/p2ptransfer")} />
+                </div>
+                <div className="children w-[85%] h-full">
+                    {children}
+                </div>
             </div>
         </div>
         
