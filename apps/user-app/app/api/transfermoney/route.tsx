@@ -45,14 +45,25 @@ export async function POST(req: NextRequest) {
                 message: "wrong password"
             }, {status: 400})
         }
-
-        if( user.Balance[0].amount < amount ) {
-            return NextResponse.json({
-                message: "not have enough balance",
-            }, {status: 400})
-        }        
+       
 
         await prisma.$transaction(async (tx) => {
+
+            // locak the user balance row
+            await tx.$queryRaw`
+                SELECT * FROM "Balance"
+                WHERE "userId" = ${userId}
+                FOR UPDATE
+            `;
+
+            const userBalance = await tx.balance.findUnique({
+                where: {userId: userId}
+            })
+
+            if( !userBalance || userBalance.amount < amount ) {
+                throw new Error("INSUFFICIENT_BALANCE")
+            }
+
             await tx.balance.update({
                 where: {userId: user.id},
                 data: {
@@ -80,9 +91,16 @@ export async function POST(req: NextRequest) {
         
     } catch (err) {
         console.error(err)
+
+        if( err instanceof Error && err.message === "INSUFFICIENT_BALANCE" ) {
+            return NextResponse.json({
+                message: "not have enough balance"
+            }, {status: 400});
+        }
+
         return NextResponse.json({
             message: "server error"
-        }, {status: 500})
+        }, {status: 500});
     }
 }
 
