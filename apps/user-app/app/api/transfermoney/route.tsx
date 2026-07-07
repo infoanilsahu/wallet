@@ -81,6 +81,16 @@ export async function POST(req: NextRequest) {
                     }
                 }
             })
+
+            await tx.p2PTransfer.create({
+                data: {
+                    amount,
+                    timestamp: new Date(),
+                    fromUserId: user.id,
+                    toUserId: transferUser.id
+                }
+            })
+            
         })
 
         return NextResponse.json({

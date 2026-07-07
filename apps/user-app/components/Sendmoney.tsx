@@ -11,7 +11,7 @@ interface P2PProp {
     className: string;
 }
 
-export function P2P({className}: P2PProp) {
+export function SendMoney({className}: P2PProp) {
   const [userNumber, setUserNumber] = useState("");
   const [amount, setAmount] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +32,7 @@ export function P2P({className}: P2PProp) {
       })
 
       if( res.status === 200 ) {
-        nevigate.push("/transfer")
+        alert("transcation successfully completed")
       }
       
     } catch (err) {

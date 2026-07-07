@@ -20,6 +20,8 @@ model User {
 
   OnRampTranscatiion OnRampTransaction[]
   Balance Balance[] 
+  FromUser P2PTransfer[] @relation(name: "FromUser")
+  ToUser P2PTransfer[] @relation(name: "ToUser")
 }
 
 model OnRampTransaction {
@@ -45,6 +47,18 @@ model Balance {
   amount Int
   locked Int
   user User @relation(fields: [userId], references: [id])
+}
+
+
+model P2PTransfer {
+  id String @id @default(uuid())
+  amount Int
+  timestamp DateTime
+  fromUserId String
+  toUserId String
+
+  fromUser User @relation(name: "FromUser",fields: [fromUserId], references: [id])
+  toUser User @relation(name: "ToUser", fields: [toUserId], references: [id])
 }
 
 
